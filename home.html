@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Blockchain Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <button onclick="location.href='home.html'">Home</button>
+    <button onclick="location.href='hash.html'">Hash</button>
+    <button onclick="location.href='block.html'">Block</button>
+    <button onclick="location.href='blockchain.html'">Blockchain</button>
+    <button onclick="location.href='distributed.html'">Distributed</button>
+  </nav>
+
+  <div class="container">
+    <h1>Welcome to Blockchain Demo</h1>
+
+<p>Explore the world of blockchain — the foundation of cryptocurrencies, digital trust, and secure decentralized systems. This demo walks you through the core concepts that make blockchain revolutionary.</p>
+
+<h2>🌐 What is Blockchain?</h2>
+<p>
+A <strong>Blockchain</strong> is a digital ledger made of blocks that store information. It is:
+<ul>
+  <li><strong>Decentralized</strong> – no single person or authority controls it</li>
+  <li><strong>Immutable</strong> – once data is recorded, it can't be changed easily</li>
+  <li><strong>Transparent</strong> – all participants can verify data</li>
+</ul>
+</p>
+<p>Think of it like a shared Google Doc — everyone sees the same copy and every change is logged.</p>
+
+<h2>🧱 What is a Block?</h2>
+<p>
+A <strong>Block</strong> is a container for data. In a blockchain, each block typically stores:
+<ul>
+  <li><strong>Index:</strong> Position of the block in the chain</li>
+  <li><strong>Timestamp:</strong> When it was added</li>
+  <li><strong>Data:</strong> Such as transaction details</li>
+  <li><strong>Previous Hash:</strong> The hash of the previous block (acts like a digital fingerprint)</li>
+  <li><strong>Hash:</strong> A cryptographic summary of this block’s contents</li>
+</ul>
+</p>
+<p>
+Each block is connected to the previous one through its hash, forming a chain.
+</p>
+
+<h2>🔐 What is a Hash?</h2>
+<p>
+A <strong>Hash</strong> is a special function that takes any data and produces a fixed-length code (usually in hexadecimal format). Example: the SHA-256 hash of the word "hello" is:
+</p>
+<pre style="background:#eee; padding:10px;">2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824</pre>
+
+<p>
+Key characteristics of a hash:
+<ul>
+  <li>Deterministic – same input gives same output</li>
+  <li>Irreversible – you can’t get the original data back from the hash</li>
+  <li>Unique – a small change in input gives a completely different hash</li>
+</ul>
+</p>
+
+<h2>🔗 What is a Blockchain?</h2>
+<p>
+It is a <strong>chain of blocks</strong> where each block is linked to the previous one using a hash. This linkage ensures:
+<ul>
+  <li>Security – tampering with one block breaks the entire chain</li>
+  <li>Integrity – all blocks are verified through consensus</li>
+  <li>Traceability – you can track the entire history</li>
+</ul>
+</p>
+
+<h2>🧬 Types of Blockchain</h2>
+
+<h3>1. Public Blockchain</h3>
+<p>
+Open to everyone. Anyone can read/write to the blockchain and participate in the consensus mechanism.
+<ul>
+  <li>Examples: <strong>Bitcoin, Ethereum</strong></li>
+  <li>Highly secure but slower and resource-intensive</li>
+</ul>
+</p>
+
+<h3>2. Private Blockchain</h3>
+<p>
+Controlled by a single organization. Participation is restricted.
+<ul>
+  <li>Examples: Used by <strong>banks, supply chains</strong></li>
+  <li>Faster and more scalable, but less decentralized</li>
+</ul>
+</p>
+
+<h3>3. Consortium (Federated) Blockchain</h3>
+<p>
+Governed by a group of organizations instead of a single entity.
+<ul>
+  <li>Examples: <strong>Hyperledger, R3</strong></li>
+  <li>Common in healthcare, finance, and logistics</li>
+</ul>
+</p>
+
+<h3>4. Hybrid Blockchain</h3>
+<p>
+Combines public and private blockchains.
+<ul>
+  <li>Example: <strong>IBM Food Trust</strong></li>
+  <li>Offers privacy + transparency as needed</li>
+</ul>
+</p>
+
+<h2>🚀 Ready to Dive In?</h2>
+<p>
+Use the navigation bar above to explore how each part works:
+<ul>
+  <li><strong>Hash</strong> – see how hashing changes when you edit data</li>
+  <li><strong>Block</strong> – understand block structure and mining</li>
+  <li><strong>Blockchain</strong> – connect blocks and see chain reaction on edits</li>
+  <li><strong>Distributed</strong> – visualize how multiple peers maintain synced blockchains</li>
+</ul>
+</p>
+
+</body>
+</html>

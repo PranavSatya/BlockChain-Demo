@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distributed Blockchain Demo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .navbar {
+    background-color: #1e1e2f;
+    padding: 12px 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .navbar button {
+    background-color: #292940;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    margin: 6px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: background 0.3s;
+  }
+
+  .navbar button:hover {
+    background-color: #3e3e5e;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+  }
+
+  h1, h2 {
+    text-align: center;
+    color: #1e1e2f;
+  }
+
+  .peer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .peer {
+    width: 100%;
+  }
+
+  .chain {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+
+  .block {
+    background-color: #f1f1f1;
+    border: 2px solid #dcdcdc;
+    border-radius: 12px;
+    padding: 15px;
+    width: 280px;
+    min-width: 280px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.4s ease;
+  }
+
+  .block h4 {
+    margin-top: 0;
+    color: #1e1e2f;
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  textarea.data {
+    width: 100%;
+    min-height: 60px;
+    resize: vertical;
+    padding: 8px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: monospace;
+  }
+
+  input.nonce {
+    width: 100%;
+    padding: 8px;
+    font-family: monospace;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+
+  .output {
+    padding: 8px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    font-family: monospace;
+    word-break: break-word;
+    border-radius: 5px;
+    margin-top: 5px;
+  }
+
+  .tampered {
+    background-color: #ffe5e5 !important;
+    border-color: #ff4d4d !important;
+  }
+
+  .button-primary {
+    margin-top: 10px;
+    padding: 10px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .button-primary:hover {
+    background-color: #0056b3;
+  }
+
+  @media screen and (max-width: 768px) {
+    .navbar {
+      flex-direction: column;
+    }
+
+    .navbar button {
+      width: 90%;
+      max-width: 300px;
+      margin: 8px auto;
+    }
+
+    .container {
+      margin: 20px 10px;
+      padding: 15px;
+    }
+
+    .chain {
+      flex-direction: column;
+    }
+
+    .block {
+      width: 100%;
+      min-width: unset;
+    }
+  }
+</style>
+
+</head>
+<body>
+  <nav class="navbar">
+    <button onclick="location.href='home.html'">Home</button>
+    <button onclick="location.href='hash.html'">Hash</button>
+    <button onclick="location.href='block.html'">Block</button>
+    <button onclick="location.href='blockchain.html'">Blockchain</button>
+    <button onclick="location.href='distributed.html'">Distributed</button>
+  </nav>
+
+  <div class="container">
+    <h1>Distributed Blockchain Demo</h1>
+    <p style="text-align:center">Three blockchain peers demonstrating distribution. You can modify, mine, and synchronize blocks between peers.</p>
+    <div style="text-align:center; margin-bottom: 30px;">
+      <button class="button-primary" onclick="syncPeers()">Synchronize Peers</button>
+    </div>
+
+    <div class="peer-container">
+      <div class="peer" id="peer1">
+        <h2>Peer 1</h2>
+        <div class="chain"></div>
+      </div>
+
+      <div class="peer" id="peer2">
+        <h2>Peer 2</h2>
+        <div class="chain"></div>
+      </div>
+
+      <div class="peer" id="peer3">
+        <h2>Peer 3</h2>
+        <div class="chain"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  const difficulty = 4;
+  const peers = ['peer1', 'peer2', 'peer3'];
+
+  function createBlock(peer, index) {
+    const container = document.createElement("div");
+    container.className = "block";
+    container.dataset.peer = peer;
+    container.dataset.index = index;
+
+    container.innerHTML = `
+      <h4>Block ${index + 1}</h4>
+      <label>Data:</label>
+      <textarea class="data">Peer ${peer.slice(-1)} Block ${index + 1}</textarea>
+      <label>Nonce:</label>
+      <input type="text" class="nonce" value="0">
+      <label>Previous Hash:</label>
+      <div class="output prev"></div>
+      <label>Hash:</label>
+      <div class="output hash"></div>
+      <button class="button-primary mine">Mine</button>
+    `;
+
+    const chain = document.querySelector(`#${peer} .chain`);
+    chain.appendChild(container);
+  }
+
+  // Create all blocks for all peers
+  peers.forEach(peer => {
+    for (let i = 0; i < 3; i++) {
+      createBlock(peer, i);
+    }
+  });
+
+  function calculateHash(prev, data, nonce) {
+    return CryptoJS.SHA256(prev + data + nonce).toString();
+  }
+
+  function updateChain(peer) {
+    const blocks = document.querySelectorAll(`#${peer} .block`);
+    blocks.forEach((block, i) => {
+      const data = block.querySelector(".data").value;
+      const nonce = block.querySelector(".nonce").value;
+      const prev = i === 0 ? '' : blocks[i - 1].querySelector(".hash").textContent;
+
+      const hash = calculateHash(prev, data, nonce);
+      block.querySelector(".prev").textContent = prev;
+      block.querySelector(".hash").textContent = hash;
+
+      if (hash.startsWith("0".repeat(difficulty))) {
+        block.classList.remove("tampered");
+      } else {
+        block.classList.add("tampered");
+      }
+    });
+  }
+
+  document.addEventListener("input", e => {
+    if (e.target.matches(".data, .nonce")) {
+      const peer = e.target.closest(".block").dataset.peer;
+      updateChain(peer);
+    }
+  });
+
+  document.addEventListener("click", e => {
+    if (e.target.matches(".mine")) {
+      const block = e.target.closest(".block");
+      const peer = block.dataset.peer;
+      const blocks = document.querySelectorAll(`#${peer} .block`);
+      const index = parseInt(block.dataset.index);
+
+      const data = block.querySelector(".data").value;
+      let nonce = 0;
+      let prev = index === 0 ? '' : blocks[index - 1].querySelector(".hash").textContent;
+      let hash;
+
+      do {
+        hash = calculateHash(prev, data, nonce);
+        nonce++;
+      } while (!hash.startsWith("0".repeat(difficulty)));
+
+      block.querySelector(".nonce").value = nonce - 1;
+      updateChain(peer);
+    }
+  });
+
+  function syncPeers() {
+    // Recalculate Peer 1 to ensure its hash chain is accurate
+    updateChain("peer1");
+
+    const sourceBlocks = document.querySelectorAll(`#peer1 .block`);
+    peers.forEach(peer => {
+      if (peer !== 'peer1') {
+        const destBlocks = document.querySelectorAll(`#${peer} .block`);
+        sourceBlocks.forEach((srcBlock, i) => {
+          const data = srcBlock.querySelector(".data").value;
+          const nonce = srcBlock.querySelector(".nonce").value;
+          destBlocks[i].querySelector(".data").value = data;
+          destBlocks[i].querySelector(".nonce").value = nonce;
+        });
+        updateChain(peer);
+      }
+    });
+  }
+
+  // Initial sync from peer1 to all others on load
+  window.addEventListener("DOMContentLoaded", () => {
+    syncPeers();
+  });
+</script>
+
+    peers.forEach(updateChain);
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hash Demo</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <button onclick="location.href='home.html'">Home</button>
+    <button onclick="location.href='hash.html'">Hash</button>
+    <button onclick="location.href='block.html'">Block</button>
+    <button onclick="location.href='blockchain.html'">Blockchain</button>
+    <button onclick="location.href='distributed.html'">Distributed</button>
+  </nav>
+
+  <div class="container">
+    <h1>SHA-256 Hash Generator</h1>
+    <p>Type in the box below. A unique SHA-256 hash will be generated. Even a small change will change the entire hash!</p>
+
+    <textarea id="inputText" rows="6" placeholder="Type your message here..."></textarea>
+    <div><strong>Generated Hash:</strong></div>
+    <div class="output" id="hashOutput"></div>
+  </div>
+
+  <script>
+    const input = document.getElementById("inputText");
+    const output = document.getElementById("hashOutput");
+
+    input.addEventListener("input", () => {
+      const hash = CryptoJS.SHA256(input.value).toString();
+      output.textContent = hash;
+    });
+  </script>
+</body>
+</html>

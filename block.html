@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Block Demo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <button onclick="location.href='home.html'">Home</button>
+    <button onclick="location.href='hash.html'">Hash</button>
+    <button onclick="location.href='block.html'">Block</button>
+    <button onclick="location.href='blockchain.html'">Blockchain</button>
+    <button onclick="location.href='distributed.html'">Distributed</button>
+  </nav>
+  
+
+  <div class="container" id="blockContainer">
+    <h1>What is a Block?</h1>
+    <p>
+      A <strong>block</strong> is the fundamental unit of a blockchain. Each block stores a set of data (typically transactions) and includes:
+    </p>
+    <ul>
+      <li><strong>Index:</strong> The position of the block in the chain.</li>
+      <li><strong>Timestamp:</strong> The date and time the block was created.</li>
+      <li><strong>Data:</strong> The content or transactions stored in the block.</li>
+      <li><strong>Previous Hash:</strong> The cryptographic hash of the previous block.</li>
+      <li><strong>Current Hash:</strong> A unique hash for the current block (calculated from the block data).</li>
+    </ul>
+    <hr />
+    <h2>Try It Yourself</h2>
+    <label for="blockData"><strong>Block Data:</strong></label>
+    <textarea id="blockData" rows="5" placeholder="Enter block data...">Initial Block Data</textarea>
+
+    <div><strong>Generated Hash:</strong></div>
+    <div class="output" id="blockHashOutput"></div>
+
+    <button class="button-primary" id="mineButton">Mine</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script>
+    const blockData = document.getElementById("blockData");
+const blockHashOutput = document.getElementById("blockHashOutput");
+const mineButton = document.getElementById("mineButton");
+const blockContainer = document.getElementById("blockContainer");
+
+let originalData = blockData.value;
+let originalHash = CryptoJS.SHA256(originalData).toString();
+
+blockHashOutput.textContent = originalHash;
+
+blockData.addEventListener("input", () => {
+  const currentData = blockData.value;
+  const currentHash = CryptoJS.SHA256(currentData).toString();
+  blockHashOutput.textContent = currentHash;
+
+  if (currentData !== originalData) {
+    blockContainer.classList.add("tampered");
+  } else {
+    blockContainer.classList.remove("tampered");
+  }
+});
+
+mineButton.addEventListener("click", () => {
+  originalData = blockData.value;
+  originalHash = CryptoJS.SHA256(originalData).toString();
+  blockHashOutput.textContent = originalHash;
+  blockContainer.classList.remove("tampered");
+});
+
+
+    mineButton.addEventListener("click", () => {
+      originalData = blockData.value;
+      originalHash = CryptoJS.SHA256(originalData).toString();
+      blockHashOutput.textContent = originalHash;
+      blockContainer.style.backgroundColor = "white"; // restore to normal
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blockchain Demo</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <button onclick="location.href='home.html'">Home</button>
+    <button onclick="location.href='hash.html'">Hash</button>
+    <button onclick="location.href='block.html'">Block</button>
+    <button onclick="location.href='blockchain.html'">Blockchain</button>
+    <button onclick="location.href='distributed.html'">Distributed</button>
+  </nav>
+
+  <!-- Block 1 -->
+  <div class="container" id="block1">
+    <h2>Block #1</h2>
+    <label>Data:</label>
+    <textarea class="data-input" rows="3">This is Block 1</textarea>
+
+    <label>Hash:</label>
+    <div class="output hash-output"></div>
+
+    <button class="button-primary mine-btn">Mine Block</button>
+  </div>
+
+  <!-- Block 2 -->
+  <div class="container" id="block2">
+    <h2>Block #2</h2>
+    <label>Data:</label>
+    <textarea class="data-input" rows="3">This is Block 2</textarea>
+
+    <label>Previous Hash:</label>
+    <div class="output prev-hash"></div>
+
+    <label>Hash:</label>
+    <div class="output hash-output"></div>
+
+    <button class="button-primary mine-btn">Mine Block</button>
+  </div>
+
+  <!-- Block 3 -->
+  <div class="container" id="block3">
+    <h2>Block #3</h2>
+    <label>Data:</label>
+    <textarea class="data-input" rows="3">This is Block 3</textarea>
+
+    <label>Previous Hash:</label>
+    <div class="output prev-hash"></div>
+
+    <label>Hash:</label>
+    <div class="output hash-output"></div>
+
+    <button class="button-primary mine-btn">Mine Block</button>
+  </div>
+
+  <script>
+    function generateHash(data, prevHash = "") {
+      return CryptoJS.SHA256(prevHash + data).toString();
+    }
+
+    const blocks = [
+      {
+        container: document.getElementById("block1"),
+        dataInput: document.querySelector("#block1 .data-input"),
+        hashOutput: document.querySelector("#block1 .hash-output"),
+        mineButton: document.querySelector("#block1 .mine-btn")
+      },
+      {
+        container: document.getElementById("block2"),
+        dataInput: document.querySelector("#block2 .data-input"),
+        hashOutput: document.querySelector("#block2 .hash-output"),
+        prevHashOutput: document.querySelector("#block2 .prev-hash"),
+        mineButton: document.querySelector("#block2 .mine-btn")
+      },
+      {
+        container: document.getElementById("block3"),
+        dataInput: document.querySelector("#block3 .data-input"),
+        hashOutput: document.querySelector("#block3 .hash-output"),
+        prevHashOutput: document.querySelector("#block3 .prev-hash"),
+        mineButton: document.querySelector("#block3 .mine-btn")
+      }
+    ];
+
+    function updateBlockchain() {
+      let prevHash = "";
+
+      blocks.forEach((block, index) => {
+        const data = block.dataInput.value;
+        const calculatedHash = generateHash(data, prevHash);
+
+        if (block.hashOutput.textContent !== calculatedHash) {
+          block.container.classList.add("tampered");
+        } else {
+          block.container.classList.remove("tampered");
+        }
+
+        if (block.prevHashOutput) {
+          block.prevHashOutput.textContent = prevHash;
+        }
+
+        prevHash = block.hashOutput.textContent;
+      });
+    }
+
+    blocks.forEach((block, index) => {
+      const previousHash = index === 0 ? "" : blocks[index - 1].hashOutput.textContent;
+      const currentHash = generateHash(block.dataInput.value, previousHash);
+      block.hashOutput.textContent = currentHash;
+
+      if (block.prevHashOutput) {
+        block.prevHashOutput.textContent = previousHash;
+      }
+
+      block.dataInput.addEventListener("input", updateBlockchain);
+
+      block.mineButton.addEventListener("click", () => {
+        const prev = index === 0 ? "" : blocks[index - 1].hashOutput.textContent;
+        const newHash = generateHash(block.dataInput.value, prev);
+        block.hashOutput.textContent = newHash;
+        block.container.classList.remove("tampered");
+
+        if (block.prevHashOutput) {
+          block.prevHashOutput.textContent = prev;
+        }
+
+        updateBlockchain();
+      });
+    });
+  </script>
+</body>
+</html>
